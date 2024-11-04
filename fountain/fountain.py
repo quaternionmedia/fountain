@@ -11,7 +11,8 @@ import re
 import string
 
 COMMON_TRANSITIONS = {'FADE OUT.', 'CUT TO BLACK.', 'FADE TO BLACK.'}
-UPPER_ALPHABETS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ ÄÖÜ1234567890'
+UPPER_ALPHABETS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ1234567890'
+CHAR_NAME_LETTERS = UPPER_ALPHABETS + string.punctuation + ' '
 
 paren_ptn = re.compile(r'\(.*?\)')
 
@@ -32,8 +33,7 @@ def _is_character(line: str) -> bool:
     concise_line = paren_ptn.sub('', line)
 
     # Remaining part should consist of uppercases and punctuation
-    return all(
-        [(c in UPPER_ALPHABETS + string.punctuation) for c in concise_line])
+    return all([(c in CHAR_NAME_LETTERS) for c in concise_line])
 
 
 class FountainElement:
