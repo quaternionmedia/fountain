@@ -4,7 +4,7 @@ name = "fountain"
 version = "0.1.0"
 description = "a python fountain script parser"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 license = "MIT"
 authors = [{ name = "Manuel Senfft", email = "info@tagirijus.de" }]
 dependencies = []
