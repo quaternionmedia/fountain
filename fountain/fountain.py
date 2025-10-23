@@ -18,8 +18,7 @@ paren_ptn = re.compile(r'\(.*?\)')
 
 
 def _is_character(line: str) -> bool:
-    '''Test if line is valid as character name
-    '''
+    '''Test if line is valid as character name'''
     if line[0] == '@':
         return True
 
@@ -47,7 +46,7 @@ class FountainElement:
         is_dual_dialogue=False,
         original_line=0,
         scene_abbreviation='.',
-        original_content=''
+        original_content='',
     ):
         self.element_type = element_type
         self.element_text = element_text
@@ -132,7 +131,7 @@ class Fountain:
                             'Boneyard',
                             text,
                             original_line=linenum,
-                            original_content=line
+                            original_content=line,
                         )
                     )
                     is_comment_block = False
@@ -150,7 +149,7 @@ class Fountain:
                         'Boneyard',
                         '\n'.join(comment_text),
                         original_line=linenum,
-                        original_content=line
+                        original_content=line,
                     )
                 )
                 is_comment_block = False
@@ -165,10 +164,7 @@ class Fountain:
             if line.startswith('==='):
                 self.elements.append(
                     FountainElement(
-                        'Page Break',
-                        line,
-                        original_line=linenum,
-                        original_content=line
+                        'Page Break', line, original_line=linenum, original_content=line
                     )
                 )
                 newlines_before = 0
@@ -180,7 +176,7 @@ class Fountain:
                         'Synopsis',
                         full_strip[1:].strip(),
                         original_line=linenum,
-                        original_content=line
+                        original_content=line,
                     )
                 )
                 continue
@@ -195,7 +191,7 @@ class Fountain:
                         'Comment',
                         full_strip.strip('[] \t'),
                         original_line=linenum,
-                        original_content=line
+                        original_content=line,
                     )
                 )
                 continue
@@ -209,7 +205,7 @@ class Fountain:
                         full_strip[depth:].strip(),
                         section_depth=depth,
                         original_line=linenum,
-                        original_content=line
+                        original_content=line,
                     )
                 )
                 continue
@@ -217,17 +213,18 @@ class Fountain:
             if len(line) > 1 and line[0] == '.' and line[1] != '.':
                 newlines_before = 0
                 if full_strip[-1] == '#' and full_strip.count('#') > 1:
-                    scene_number_start = len(full_strip) - \
-                        full_strip[::-1].find('#', 1) - 1
+                    scene_number_start = (
+                        len(full_strip) - full_strip[::-1].find('#', 1) - 1
+                    )
                     self.elements.append(
                         FountainElement(
                             'Scene Heading',
                             full_strip[1:scene_number_start].strip(),
-                            scene_number=full_strip[
-                                scene_number_start:
-                            ].strip('#').strip(),
+                            scene_number=full_strip[scene_number_start:]
+                            .strip('#')
+                            .strip(),
                             original_line=linenum,
-                            original_content=line
+                            original_content=line,
                         )
                     )
                 else:
@@ -236,34 +233,33 @@ class Fountain:
                             'Scene Heading',
                             full_strip[1:].strip(),
                             original_line=linenum,
-                            original_content=line
+                            original_content=line,
                         )
                     )
                 continue
 
             if (
-                line[0:4].upper() in
-                ['INT ', 'INT.', 'EXT ', 'EXT.', 'EST ', 'EST.', 'I/E ', 'I/E.']
+                line[0:4].upper()
+                in ['INT ', 'INT.', 'EXT ', 'EXT.', 'EST ', 'EST.', 'I/E ', 'I/E.']
                 or line[0:8].upper() in ['INT/EXT ', 'INT/EXT.']
                 or line[0:9].upper() in ['INT./EXT ', 'INT./EXT.']
             ):
                 newlines_before = 0
                 scene_name_start = line.find(line.split()[1])
                 if full_strip[-1] == '#' and full_strip.count('#') > 1:
-                    scene_number_start = len(full_strip) - \
-                        full_strip[::-1].find('#', 1) - 1
+                    scene_number_start = (
+                        len(full_strip) - full_strip[::-1].find('#', 1) - 1
+                    )
                     self.elements.append(
                         FountainElement(
                             'Scene Heading',
-                            full_strip[
-                                scene_name_start:scene_number_start
-                            ].strip(),
-                            scene_number=full_strip[
-                                scene_number_start:
-                            ].strip('#').strip(),
+                            full_strip[scene_name_start:scene_number_start].strip(),
+                            scene_number=full_strip[scene_number_start:]
+                            .strip('#')
+                            .strip(),
                             original_line=linenum,
                             scene_abbreviation=line.split()[0],
-                            original_content=line
+                            original_content=line,
                         )
                     )
                 else:
@@ -273,7 +269,7 @@ class Fountain:
                             full_strip[scene_name_start:].strip(),
                             original_line=linenum,
                             scene_abbreviation=line.split()[0],
-                            original_content=line
+                            original_content=line,
                         )
                     )
                 continue
@@ -285,7 +281,7 @@ class Fountain:
                         'Transition',
                         full_strip,
                         original_line=linenum,
-                        original_content=line
+                        original_content=line,
                     )
                 )
                 continue
@@ -297,7 +293,7 @@ class Fountain:
                         'Transition',
                         full_strip,
                         original_line=linenum,
-                        original_content=line
+                        original_content=line,
                     )
                 )
                 continue
@@ -311,7 +307,7 @@ class Fountain:
                             full_strip[1:-1].strip(),
                             is_centered=True,
                             original_line=linenum,
-                            original_content=line
+                            original_content=line,
                         )
                     )
                 else:
@@ -320,7 +316,7 @@ class Fountain:
                             'Transition',
                             full_strip[1:].strip(),
                             original_line=linenum,
-                            original_content=line
+                            original_content=line,
                         )
                     )
                 continue
@@ -343,7 +339,7 @@ class Fountain:
                             full_strip.lstrip('@').rstrip('^').strip(),
                             is_dual_dialogue=True,
                             original_line=linenum,
-                            original_content=line
+                            original_content=line,
                         )
                     )
                     is_inside_dialogue_block = True
@@ -353,7 +349,7 @@ class Fountain:
                             'Character',
                             full_strip.lstrip('@'),
                             original_line=linenum,
-                            original_content=line
+                            original_content=line,
                         )
                     )
                     is_inside_dialogue_block = True
@@ -366,7 +362,7 @@ class Fountain:
                             'Parenthetical',
                             full_strip,
                             original_line=linenum,
-                            original_content=line
+                            original_content=line,
                         )
                     )
                 else:
@@ -383,14 +379,15 @@ class Fountain:
                                 'Dialogue',
                                 full_strip,
                                 original_line=linenum,
-                                original_content=line
+                                original_content=line,
                             )
                         )
                 continue
 
             if newlines_before == 0 and len(self.elements) > 0:
                 self.elements[-1].element_text = '\n'.join(
-                    [self.elements[-1].element_text, full_strip])
+                    [self.elements[-1].element_text, full_strip]
+                )
                 newlines_before = 0
             else:
                 self.elements.append(
@@ -398,7 +395,7 @@ class Fountain:
                         'Action',
                         full_strip,
                         original_line=linenum,
-                        original_content=line
+                        original_content=line,
                     )
                 )
                 newlines_before = 0
