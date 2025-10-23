@@ -76,7 +76,15 @@ class Fountain:
             self.parse()
 
     def parse(self):
+        # Clear any existing parsed data to prevent duplication
+        self.metadata = dict()
+        self.elements = list()
+
         contents = self.contents.strip().replace('\r', '')
+
+        # Handle empty content
+        if not contents:
+            return
 
         contents_has_metadata = ':' in contents.splitlines()[0]
         contents_has_body = '\n\n' in contents
